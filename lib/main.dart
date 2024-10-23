@@ -3,8 +3,7 @@ import 'package:expanse_management/presentation/widgets/bottom_navbar.dart';
 import 'package:expanse_management/domain/models/category_model.dart';
 import 'package:expanse_management/domain/models/transaction_model.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'login.dart';
-import 'register.dart';
+import 'auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,14 +23,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Personal Expense Management',
+      title: 'Personal Finance Manager',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => LoginPage(),
-        '/register': (context) => RegisterPage(),
+        '/': (context) => AuthPage(),
         '/home': (context) =>
             Bottom(), // Using the Bottom widget for home screen
       },
