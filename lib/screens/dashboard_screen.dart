@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'income_expense_screen.dart';
-import 'budget_screen.dart';
-import 'savings_goal_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   @override
@@ -9,47 +6,72 @@ class DashboardScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Dashboard"),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              Navigator.pushNamed(context, '/profile_settings');
-            },
-          )
-        ],
+        elevation: 4,
       ),
-      body: Column(
-        children: [
-          ListTile(
-            title: Text("Income & Expenses"),
-            subtitle: Text("Summary of your financial activities"),
-            trailing: Icon(Icons.add),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => IncomeExpenseScreen()));
-            },
-          ),
-          ListTile(
-            title: Text("Budget Management"),
-            subtitle: Text("Manage your budgets"),
-            trailing: Icon(Icons.edit),
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => BudgetScreen()));
-            },
-          ),
-          ListTile(
-            title: Text("Savings Goals"),
-            subtitle: Text("Track your savings progress"),
-            trailing: Icon(Icons.savings),
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SavingsGoalScreen()));
-            },
-          ),
-        ],
+      body: Padding(
+        padding:
+            const EdgeInsets.all(16.0), // Adding padding to the entire screen
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Financial Overview',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            SizedBox(height: 20),
+            _buildCard(
+              context,
+              title: "Income & Expenses",
+              subtitle: "Summary of your financial activities",
+              icon: Icons.pie_chart,
+              onTap: () {
+                Navigator.pushNamed(context, '/income_expense');
+              },
+            ),
+            _buildCard(
+              context,
+              title: "Budget Management",
+              subtitle: "Manage your budgets",
+              icon: Icons.money,
+              onTap: () {
+                Navigator.pushNamed(context, '/budget');
+              },
+            ),
+            _buildCard(
+              context,
+              title: "Savings Goals",
+              subtitle: "Track your savings progress",
+              icon: Icons.savings,
+              onTap: () {
+                Navigator.pushNamed(context, '/savings_goal');
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Reusable method to build a consistent Card design for the dashboard
+  Widget _buildCard(BuildContext context,
+      {required String title,
+      required String subtitle,
+      required IconData icon,
+      required VoidCallback onTap}) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      elevation: 6,
+      margin: EdgeInsets.symmetric(vertical: 10),
+      child: ListTile(
+        leading: Icon(icon, color: Theme.of(context).primaryColor, size: 40),
+        title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text(subtitle),
+        trailing: Icon(Icons.arrow_forward_ios),
+        onTap: onTap,
       ),
     );
   }
