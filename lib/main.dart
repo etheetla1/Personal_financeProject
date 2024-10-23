@@ -1,37 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:expanse_management/presentation/widgets/bottom_navbar.dart';
-import 'package:expanse_management/domain/models/category_model.dart';
-import 'package:expanse_management/domain/models/transaction_model.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'auth.dart';
+import 'screens/login_signup.dart';
+import 'screens/dashboard_screen.dart';
+import 'screens/profile_settings.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  Hive.registerAdapter(TransactionAdapter());
-  Hive.registerAdapter(CategoryModelAdapter());
-  await Hive.openBox<Transaction>('transactions');
-  await Hive.openBox<CategoryModel>('categories');
-
-  runApp(MyApp());
+void main() {
+  runApp(FinanceManagerApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+class FinanceManagerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Personal Finance Manager',
+      title: 'Finance Manager',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        brightness: Brightness.dark, // Default to dark mode
       ),
-      initialRoute: '/',
+      // Using named routes allows easy navigation and more scalable management of screens.
+      initialRoute:
+          '/', // This can be set to your initial screen (login/signup)
       routes: {
-        '/': (context) => AuthPage(),
-        '/home': (context) =>
-            Bottom(), // Using the Bottom widget for home screen
+        '/': (context) => LoginSignupScreen(), // Initial route
+        '/dashboard': (context) => DashboardScreen(),
+        '/profile_settings': (context) => ProfileSettingsScreen(),
       },
     );
   }
