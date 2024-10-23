@@ -14,55 +14,38 @@ class DBHelper {
 
   initDb() async {
     String path = await getDatabasesPath();
-    String dbPath = join(path, 'finance_manager.db');
+    String dbPath = join(path, 'user_database.db');
     return await openDatabase(
       dbPath,
       version: 1,
       onCreate: (db, version) async {
         await db.execute('''
-          CREATE TABLE user (
+          CREATE TABLE users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             email TEXT,
-            password TEXT,
-            biometric_enabled INTEGER
-          )
-        ''');
-        await db.execute('''
-          CREATE TABLE income_expense (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            amount REAL,
-            description TEXT,
-            category TEXT,
-            type TEXT,
-            date TEXT
-          )
-        ''');
-        await db.execute('''
-          CREATE TABLE budget (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            category TEXT,
-            budget_limit REAL,
-            spent REAL
-          )
-        ''');
-        await db.execute('''
-          CREATE TABLE savings_goal (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            goal_name TEXT,
-            goal_amount REAL,
-            saved_amount REAL
-          )
-        ''');
-        await db.execute('''
-          CREATE TABLE settings (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            dark_mode INTEGER,
-            export_format TEXT
+            password TEXT
           )
         ''');
       },
     );
   }
 
-  // CRUD methods here (e.g., insertUser, getIncomeExpense, updateBudget, etc.)
+  Future<void> registerUser(String email, String password) async {
+    var dbClient = await db;
+    await dbClient.insert('users', {'email': email, 'password': password});
+  }
+
+  Future<Map<String, dynamic>?> loginUser(String email, String password) async {
+    var dbClient = await db;
+    var result = await dbClient.query(
+      'users',
+      where: 'email = ? AND password = ?',
+      whereArgs: [email, password],
+    );
+
+    if (result.isNotEmpty) {
+      return result.first;
+    }
+    return null;
+  }
 }
