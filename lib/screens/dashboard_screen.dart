@@ -7,6 +7,15 @@ class DashboardScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Dashboard"),
         elevation: 4,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.pushNamed(context,
+                  '/profile_settings'); // Navigates to the settings screen
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding:

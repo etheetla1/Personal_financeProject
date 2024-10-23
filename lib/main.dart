@@ -1,3 +1,6 @@
+import 'package:expanse_management/screens/budget_screen.dart';
+import 'package:expanse_management/screens/income_expense_screen.dart';
+import 'package:expanse_management/screens/savings_goal_screen.dart';
 import 'package:flutter/material.dart';
 import 'screens/login_signup.dart';
 import 'screens/dashboard_screen.dart';
@@ -22,6 +25,9 @@ class FinanceManagerApp extends StatelessWidget {
         '/': (context) => LoginSignupScreen(), // Initial route
         '/dashboard': (context) => DashboardScreen(),
         '/profile_settings': (context) => ProfileSettingsScreen(),
+        '/budget': (context) => BudgetScreen(),
+        '/income_expense': (context) => IncomeExpenseScreen(),
+        '/savings_goal': (context) => SavingsGoalScreen(),
       },
     );
   }
