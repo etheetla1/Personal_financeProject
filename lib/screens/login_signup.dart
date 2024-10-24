@@ -74,6 +74,21 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Logo at the top of the form
+            Image.asset(
+              'images/appLogo.png', // Adjust the path to your logo
+              height: 100, // Adjust height for the logo
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Personal Finance Manager',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: widget.isDarkMode ? Colors.white : Colors.black,
+              ),
+            ),
+            SizedBox(height: 40),
             _buildTextField("Email", false, (value) => email = value),
             SizedBox(height: 20),
             _buildTextField("Password", true, (value) => password = value),

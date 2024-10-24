@@ -56,8 +56,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       builder: (BuildContext context) {
         return Container(
           padding: const EdgeInsets.all(16.0),
-          height: MediaQuery.of(context).size.height *
-              0.3, // Adjust based on screen size
+          height: MediaQuery.of(context).size.height * 0.3,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -106,58 +105,67 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dashboard'),
+        title: Row(
+          children: [
+            Image.asset(
+              'images/appLogo.png', // Adjust the path to your logo
+              height: 40, // Height for the logo
+            ),
+            SizedBox(width: 10), // Space between the logo and the text
+            Text(
+              'Personal Finance Manager',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.settings),
-            onPressed: _openSettings, // Settings button
+            onPressed: _openSettings,
           ),
           IconButton(
             icon: Icon(Icons.logout),
-            onPressed: _logout, // Logout button
+            onPressed: _logout,
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : errorMessage.isNotEmpty
-                ? Center(child: Text(errorMessage))
-                : SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildSectionTitle('Transactions', screenHeight),
-                        transactions.isEmpty
-                            ? _buildEmptyState('No transactions available.',
-                                '/income_expense', screenHeight, screenWidth)
-                            : _buildCardList(transactions, 'amount',
-                                'description', screenHeight,
-                                isTransaction: true),
-                        SizedBox(height: 20),
-                        _buildSectionTitle('Budgets', screenHeight),
-                        budgets.isEmpty
-                            ? _buildEmptyState('No budgets available.',
-                                '/budget', screenHeight, screenWidth)
-                            : _buildCardList(budgets, 'budget_limit',
-                                'category', screenHeight,
-                                isBudget: true),
-                        SizedBox(height: 20),
-                        _buildSectionTitle('Savings Goals', screenHeight),
-                        savingsGoals.isEmpty
-                            ? _buildEmptyState('No savings goals available.',
-                                '/savings_goal', screenHeight, screenWidth)
-                            : _buildCardList(savingsGoals, 'goal_amount',
-                                'goal_name', screenHeight,
-                                isSavings: true),
-                      ],
-                    ),
-                  ),
-      ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : errorMessage.isNotEmpty
+              ? Center(child: Text(errorMessage))
+              : ListView(
+                  padding: const EdgeInsets.all(16.0),
+                  children: [
+                    _buildSectionTitle('Transactions', screenHeight),
+                    transactions.isEmpty
+                        ? _buildEmptyState('No transactions available.',
+                            '/income_expense', screenHeight, screenWidth)
+                        : _buildCardList(
+                            transactions, 'amount', 'description', screenHeight,
+                            isTransaction: true),
+                    SizedBox(height: 20),
+                    _buildSectionTitle('Budgets', screenHeight),
+                    budgets.isEmpty
+                        ? _buildEmptyState('No budgets available.', '/budget',
+                            screenHeight, screenWidth)
+                        : _buildCardList(
+                            budgets, 'budget_limit', 'category', screenHeight,
+                            isBudget: true),
+                    SizedBox(height: 20),
+                    _buildSectionTitle('Savings Goals', screenHeight),
+                    savingsGoals.isEmpty
+                        ? _buildEmptyState('No savings goals available.',
+                            '/savings_goal', screenHeight, screenWidth)
+                        : _buildCardList(savingsGoals, 'goal_amount',
+                            'goal_name', screenHeight,
+                            isSavings: true),
+                  ],
+                ),
       floatingActionButton: FloatingActionButton(
-        onPressed:
-            _showAddOptions, // Show options to add Income/Expense, Budget, or Savings Goal
+        onPressed: _showAddOptions,
         child: Icon(Icons.add),
         backgroundColor: Colors.blueAccent,
       ),
@@ -170,7 +178,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Text(
         title,
         style: TextStyle(
-          fontSize: screenHeight * 0.03, // Dynamic font size
+          fontSize: screenHeight * 0.03,
           fontWeight: FontWeight.bold,
           color: Colors.blueAccent,
         ),
@@ -178,7 +186,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // Only show the dollar symbol for amounts
   Widget _buildCardList(List<Map<String, dynamic>> items, String amountKey,
       String titleKey, double screenHeight,
       {bool isBudget = false,
@@ -186,34 +193,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
       bool isTransaction = false}) {
     return ListView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics:
+          NeverScrollableScrollPhysics(), // Prevent inner scrolling conflict
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
         return Card(
-          margin: EdgeInsets.symmetric(
-              vertical: screenHeight * 0.01), // Dynamic margin
+          margin: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
           elevation: 4,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
           child: ListTile(
-            contentPadding:
-                EdgeInsets.all(screenHeight * 0.02), // Dynamic padding
+            contentPadding: EdgeInsets.all(screenHeight * 0.02),
             title: Text(
-              '${item[titleKey]}', // Do not add $ for descriptions or categories
+              '${item[titleKey]}',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: screenHeight * 0.022, // Dynamic font size
+                fontSize: screenHeight * 0.022,
               ),
             ),
             subtitle: Text(
-              // Show dollar symbol only for amounts
               isBudget || isSavings || isTransaction
-                  ? 'Amount: \$${item[amountKey]}' // Dollar only for amounts
+                  ? 'Amount: \$${item[amountKey]}'
                   : '${item[amountKey]}',
-              style:
-                  TextStyle(fontSize: screenHeight * 0.02), // Dynamic font size
+              style: TextStyle(fontSize: screenHeight * 0.02),
             ),
           ),
         );
@@ -226,7 +230,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(height: screenHeight * 0.05), // Dynamic spacing
+        SizedBox(height: screenHeight * 0.05),
         Center(
           child: Text(
             message,
@@ -236,7 +240,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
         ),
-        SizedBox(height: screenHeight * 0.02), // Dynamic spacing
+        SizedBox(height: screenHeight * 0.02),
         ElevatedButton(
           onPressed: () {
             Navigator.pushNamed(context, routeName, arguments: widget.userId);
@@ -244,12 +248,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: Text('Add Now'),
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(
-                vertical: screenHeight * 0.02,
-                horizontal: screenWidth * 0.1), // Dynamic button size
+                vertical: screenHeight * 0.02, horizontal: screenWidth * 0.1),
             textStyle: TextStyle(fontSize: screenHeight * 0.02),
             backgroundColor: Colors.blueAccent,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0), // Rectangular shape
+              borderRadius: BorderRadius.circular(8.0),
             ),
           ),
         ),
