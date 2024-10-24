@@ -67,28 +67,48 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ListTile(
                 leading: Icon(Icons.monetization_on),
                 title: Text("Add Income or Expense"),
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, '/income_expense',
+                  // Push to the add screen and wait for the result
+                  final result = await Navigator.pushNamed(
+                      context, '/income_expense',
                       arguments: widget.userId);
+
+                  // Cast the result to bool or default to false if null
+                  if (result == true) {
+                    loadUserData(); // Reload the dashboard data
+                  }
                 },
               ),
               ListTile(
                 leading: Icon(Icons.pie_chart),
                 title: Text("Add Budget"),
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, '/budget',
+                  // Push to the add budget screen and wait for result
+                  final result = await Navigator.pushNamed(context, '/budget',
                       arguments: widget.userId);
+
+                  // Cast the result to bool or default to false if null
+                  if (result == true) {
+                    loadUserData(); // Reload dashboard
+                  }
                 },
               ),
               ListTile(
                 leading: Icon(Icons.savings),
                 title: Text("Add Savings Goal"),
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, '/savings_goal',
+                  // Push to the add savings goal screen and wait for result
+                  final result = await Navigator.pushNamed(
+                      context, '/savings_goal',
                       arguments: widget.userId);
+
+                  // Cast the result to bool or default to false if null
+                  if (result == true) {
+                    loadUserData(); // Reload dashboard
+                  }
                 },
               ),
             ],
