@@ -1,36 +1,89 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/login_signup.dart';
 import 'screens/dashboard_screen.dart';
-import 'screens/profile_settings.dart';
 import 'screens/income_expense_screen.dart';
 import 'screens/budget_screen.dart';
 import 'screens/savings_goal_screen.dart';
+import 'screens/profile_settings.dart';
 
 void main() {
   runApp(FinanceManagerApp());
 }
 
-class FinanceManagerApp extends StatelessWidget {
+class FinanceManagerApp extends StatefulWidget {
+  @override
+  _FinanceManagerAppState createState() => _FinanceManagerAppState();
+}
+
+class _FinanceManagerAppState extends State<FinanceManagerApp> {
+  bool isDarkMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadThemePreference();
+  }
+
+  void _loadThemePreference() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isDarkMode = prefs.getBool('isDarkMode') ?? false;
+    });
+  }
+
+  void _toggleTheme(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isDarkMode = value;
+      prefs.setBool('isDarkMode', value);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Finance Manager',
-      theme: ThemeData(
-        brightness: Brightness.dark, // Default to dark mode
-      ),
-      // Setting the initial route to the login/signup screen
+      theme: isDarkMode ? ThemeData.dark() : ThemeData.light(),
       initialRoute: '/',
-      routes: {
-        '/': (context) => LoginSignupScreen(), // Initial login/signup screen
-        '/dashboard': (context) =>
-            DashboardScreen(), // After login, the dashboard
-        '/profile_settings': (context) =>
-            ProfileSettingsScreen(), // Settings screen
-        '/income_expense': (context) =>
-            IncomeExpenseScreen(), // Income/Expense screen
-        '/budget': (context) => BudgetScreen(), // Budget management screen
-        '/savings_goal': (context) =>
-            SavingsGoalScreen(), // Savings goal screen
+      onGenerateRoute: (RouteSettings settings) {
+        switch (settings.name) {
+          case '/':
+            return MaterialPageRoute(
+                builder: (context) => LoginSignupScreen(
+                    toggleTheme: _toggleTheme, isDarkMode: isDarkMode));
+          case '/dashboard':
+            final int userId =
+                settings.arguments as int; // Get userId from arguments
+            return MaterialPageRoute(
+                builder: (context) => DashboardScreen(userId: userId));
+          case '/income_expense':
+            final int userId = settings.arguments as int;
+            return MaterialPageRoute(
+                builder: (context) => IncomeExpenseScreen(userId: userId));
+          case '/budget':
+            final int userId = settings.arguments as int;
+            return MaterialPageRoute(
+                builder: (context) => BudgetScreen(userId: userId));
+          case '/savings_goal':
+            final int userId = settings.arguments as int;
+            return MaterialPageRoute(
+                builder: (context) => SavingsGoalScreen(userId: userId));
+          case '/profile_settings':
+            final int userId = settings.arguments as int;
+            return MaterialPageRoute(
+                builder: (context) => ProfileSettingsScreen(
+                      toggleTheme: _toggleTheme,
+                      isDarkMode: isDarkMode,
+                      userId: userId,
+                    ));
+          default:
+            return MaterialPageRoute(
+                builder: (context) => LoginSignupScreen(
+                      toggleTheme: _toggleTheme,
+                      isDarkMode: isDarkMode,
+                    ));
+        }
       },
     );
   }

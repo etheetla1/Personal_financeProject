@@ -23,9 +23,9 @@ class DBHelper {
         // Create users table
         await db.execute('''
           CREATE TABLE users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT,
-            password TEXT
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          email TEXT NOT NULL,
+          password TEXT NOT NULL
           )
         ''');
 
@@ -76,16 +76,23 @@ class DBHelper {
   }
 
   Future<Map<String, dynamic>?> loginUser(String email, String password) async {
-    var dbClient = await db;
-    var result = await dbClient.query(
+    final database = await db;
+
+    // Query the database for the user
+    List<Map<String, dynamic>> result = await database.query(
       'users',
       where: 'email = ? AND password = ?',
       whereArgs: [email, password],
     );
-    if (result.isNotEmpty) {
-      return result.first;
+
+    // Check if a result was found and the 'id' field is not null
+    if (result.isNotEmpty &&
+        result.first.containsKey('id') &&
+        result.first['id'] != null) {
+      return result.first; // Return the first user found with valid id
+    } else {
+      return null; // No valid user found or 'id' is null
     }
-    return null;
   }
 
   // Transaction methods

@@ -1,6 +1,20 @@
 import 'package:flutter/material.dart';
 
 class ProfileSettingsScreen extends StatelessWidget {
+  final Function(bool) toggleTheme;
+  final bool isDarkMode;
+  final int userId;
+
+  ProfileSettingsScreen({
+    required this.toggleTheme,
+    required this.isDarkMode,
+    required this.userId,
+  });
+
+  void _logout(BuildContext context) {
+    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,17 +25,19 @@ class ProfileSettingsScreen extends StatelessWidget {
           children: [
             SwitchListTile(
               title: Text("Dark Mode"),
-              value: true, // get from DB or shared preferences
-              onChanged: (bool value) {
-                // Save setting to DB
+              value: isDarkMode,
+              onChanged: (value) {
+                toggleTheme(value);
               },
             ),
             ElevatedButton(
-              onPressed: () {
-                // Export Data Functionality
-              },
-              child: Text("Export Data"),
-            )
+              onPressed: () => _logout(context),
+              child: Text("Logout"),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 16.0),
+                textStyle: TextStyle(fontSize: 18),
+              ),
+            ),
           ],
         ),
       ),
