@@ -25,8 +25,9 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
           widget.userId, amount, description, selectedCategory);
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Transaction added successfully')));
-      Navigator.pop(
-          context); // Return to the dashboard after adding the transaction
+
+      // Return true to indicate data was added and the dashboard should reload
+      Navigator.pop(context, true);
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Please enter valid data')));
@@ -42,42 +43,48 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
       appBar: AppBar(
         title: Text("Add Income & Expense"),
       ),
-      body: ListView(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
-        children: [
-          Text(
-            "Add Transaction",
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: screenHeight * 0.03,
-                ),
-          ),
-          SizedBox(height: screenHeight * 0.02),
-          _buildTextField(context, "Amount", TextInputType.number,
-              amountController, screenHeight),
-          SizedBox(height: screenHeight * 0.015),
-          _buildTextField(context, "Description", TextInputType.text,
-              descriptionController, screenHeight),
-          SizedBox(height: screenHeight * 0.015),
-          _buildCategoryDropdown(screenHeight),
-          SizedBox(height: screenHeight * 0.05),
-          Center(
-            child: ElevatedButton(
-              onPressed: _addTransaction,
-              child: Text("Add Transaction"),
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(
-                    vertical: screenHeight * 0.02,
-                    horizontal: screenWidth * 0.3),
-                textStyle: TextStyle(fontSize: screenHeight * 0.02),
-                backgroundColor: Colors.blueAccent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Add Transaction",
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: screenHeight * 0.03, // Dynamic font size
+                  ),
+            ),
+            SizedBox(height: screenHeight * 0.02),
+            _buildTextField(context, "Amount", TextInputType.number,
+                amountController, screenHeight),
+            SizedBox(height: screenHeight * 0.015),
+            _buildTextField(context, "Description", TextInputType.text,
+                descriptionController, screenHeight),
+            SizedBox(height: screenHeight * 0.015),
+            _buildCategoryDropdown(screenHeight),
+            SizedBox(
+                height: screenHeight *
+                    0.05), // Add extra spacing to center the button better
+            Center(
+              child: ElevatedButton(
+                onPressed: _addTransaction,
+                child: Text("Add Transaction"),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(
+                      vertical: screenHeight * 0.02,
+                      horizontal: screenWidth * 0.3), // Button size
+                  textStyle: TextStyle(fontSize: screenHeight * 0.02),
+                  backgroundColor: Colors.blueAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(8.0), // Rectangular button
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -97,7 +104,8 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
           borderRadius: BorderRadius.circular(12),
         ),
         contentPadding: EdgeInsets.symmetric(
-            horizontal: 16.0, vertical: screenHeight * 0.015),
+            horizontal: 16.0,
+            vertical: screenHeight * 0.015), // Dynamic padding
       ),
     );
   }
@@ -107,7 +115,8 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
       decoration: InputDecoration(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         contentPadding: EdgeInsets.symmetric(
-            horizontal: 16.0, vertical: screenHeight * 0.015),
+            horizontal: 16.0,
+            vertical: screenHeight * 0.015), // Dynamic padding
       ),
       value: selectedCategory,
       items: <String>['Income', 'Expense'].map((String value) {

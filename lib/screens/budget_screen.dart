@@ -12,20 +12,23 @@ class BudgetScreen extends StatefulWidget {
 
 class _BudgetScreenState extends State<BudgetScreen> {
   final DBHelper dbHelper = DBHelper();
-  TextEditingController budgetAmountController = TextEditingController();
-  String selectedCategory = 'Groceries';
+  TextEditingController amountController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
 
   void _addBudget() async {
-    double budgetLimit = double.tryParse(budgetAmountController.text) ?? 0;
+    double amount = double.tryParse(amountController.text) ?? 0;
+    String category = categoryController.text;
 
-    if (budgetLimit > 0) {
-      await dbHelper.addBudget(widget.userId, selectedCategory, budgetLimit);
+    if (amount > 0 && category.isNotEmpty) {
+      await dbHelper.addBudget(widget.userId, category, amount);
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Budget added successfully')));
-      Navigator.pop(context);
+
+      // Return true to indicate data was added and the dashboard should reload
+      Navigator.pop(context, true);
     } else {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Please enter a valid amount')));
+          .showSnackBar(SnackBar(content: Text('Please enter valid data')));
     }
   }
 
@@ -35,28 +38,39 @@ class _BudgetScreenState extends State<BudgetScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(title: Text("Manage Budget")),
+      appBar: AppBar(
+        title: Text("Add Budget"),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildTextField(context, "Budget Amount", TextInputType.number,
-                budgetAmountController, screenHeight),
-            SizedBox(height: screenHeight * 0.015),
-            _buildCategoryDropdown(screenHeight),
+            Text(
+              "Add Budget",
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: screenHeight * 0.03,
+                  ),
+            ),
             SizedBox(height: screenHeight * 0.02),
-            ElevatedButton(
-              onPressed: _addBudget,
-              child: Text("Set Budget"),
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(
-                    vertical: screenHeight * 0.02,
-                    horizontal: screenWidth * 0.1), // Dynamic button size
-                textStyle: TextStyle(fontSize: screenHeight * 0.02),
-                backgroundColor: Colors.blueAccent,
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(8.0), // Rectangular button
+            _buildTextField("Amount", amountController, screenHeight),
+            SizedBox(height: screenHeight * 0.02),
+            _buildTextField("Category", categoryController, screenHeight),
+            SizedBox(height: screenHeight * 0.05),
+            Center(
+              child: ElevatedButton(
+                onPressed: _addBudget,
+                child: Text("Add Budget"),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(
+                      vertical: screenHeight * 0.02,
+                      horizontal: screenWidth * 0.3),
+                  textStyle: TextStyle(fontSize: screenHeight * 0.02),
+                  backgroundColor: Colors.blueAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
                 ),
               ),
             ),
@@ -67,47 +81,18 @@ class _BudgetScreenState extends State<BudgetScreen> {
   }
 
   Widget _buildTextField(
-      BuildContext context,
-      String hintText,
-      TextInputType type,
-      TextEditingController controller,
-      double screenHeight) {
+      String hint, TextEditingController controller, double screenHeight) {
     return TextField(
       controller: controller,
-      keyboardType: type,
+      keyboardType: TextInputType.number,
       decoration: InputDecoration(
-        hintText: hintText,
+        hintText: hint,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
         contentPadding: EdgeInsets.symmetric(
-            horizontal: 16.0,
-            vertical: screenHeight * 0.015), // Dynamic padding
+            horizontal: 16.0, vertical: screenHeight * 0.015),
       ),
-    );
-  }
-
-  Widget _buildCategoryDropdown(double screenHeight) {
-    return DropdownButtonFormField<String>(
-      decoration: InputDecoration(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        contentPadding: EdgeInsets.symmetric(
-            horizontal: 16.0,
-            vertical: screenHeight * 0.015), // Dynamic padding
-      ),
-      value: selectedCategory,
-      items: <String>['Groceries', 'Rent', 'Utilities', 'Others']
-          .map((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-      onChanged: (newValue) {
-        setState(() {
-          selectedCategory = newValue!;
-        });
-      },
     );
   }
 }
