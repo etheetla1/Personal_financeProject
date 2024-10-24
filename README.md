@@ -1,120 +1,76 @@
-# Personal Expense Management App
-
-This  Personal Expense Management App is a mobile application developed using the Flutter framework. It helps users keep track of their expenses and manage their financial activities conveniently.
-
-## Features
-
-- [ ] **Register/Login**: If you are a new user, you can create an account. Existing users can log in with their credentials.
-
-- [x] **Dashboard**: The dashboard provides an overview of your expenses, income, and budget status.
-
-- [x] **Add Expense/Income**: You can add your expenses or income by providing the necessary details such as the amount, date, and category/source.
-
-- [x] **Categories**: You can manage expense categories, add new ones, or edit existing categories.
-
-- [ ] **Budgets**: Set monthly budgets for different categories and track your spending against the budget.
-
-- [x] **Visualizations**: Explore visual representations of your spending habits through charts and graphs.
-
-- [ ] **Reports**: Generate detailed expense reports based on specific time periods, categories, or custom filters.
-
-- [ ] **Settings**: Access app settings to customize preferences, notification reminders, and manage your account.
-
-- [x] **Search**: You can search a transaction by notes.
-
-## Installation
-
-1. Clone this repository to your local machine.
-
-```sh
-git clone https://github.com/imghostcode/Personal-Expense-Management-App.git
-```
-
-2. Change to the project directory.
-
-```sh
-cd Personal-Expense-Management-App
-```
-3. Install the required dependencies.
-
-```sh
-flutter pub get
-```
-4. Run the app on a connected device or emulator.
-
-```sh
-flutter run
-```
-
-For detailed instructions on setting up Flutter, please refer to the official Flutter documentation: [Flutter - Get started](https://flutter.dev/docs/get-started)
-
-## Usage
-
-Upon launching the Expenses Tracker App, you will be greeted with a user-friendly interface. Here's a brief overview of the app's functionality:
-
-1. **Register/Login**: If you are a new user, you can create an account. Existing users can log in with their credentials.
-
-2. **Dashboard**: The dashboard provides an overview of your expenses, income, and budget status.
-
-3. **Add Expense/Income**: You can add your expenses or income by providing the necessary details such as the amount, date, and category/source.
-
-4. **Categories**: You can manage expense categories, add new ones, or edit existing categories.
-
-5. **Budgets**: Set monthly budgets for different categories and track your spending against the budget.
-
-6. **Visualizations**: Explore visual representations of your spending habits through charts and graphs.
-
-7. **Reports**: Generate detailed expense reports based on specific time periods, categories, or custom filters.
-
-8. **Settings**: Access app settings to customize preferences, notification reminders, and manage your account.
-
-## Contributing
-
-Contributions to the Expenses Tracker App are welcome! If you encounter any bugs, have suggestions for new features, or would like to contribute to the codebase, please follow these steps:
-
-1. Fork the repository and create a new branch.
-
-2. Make your desired changes and enhancements.
-
-3. Test your changes thoroughly.
-
-4. Commit your changes with clear and concise messages.
-
-5. Push your changes to your forked repository.
-
-6. Open a pull request, describing your changes and explaining why they should be merged.
-
-Please note that all contributions are subject to review and acceptance by the project maintainers.
-
-## License
-
-This Expenses Tracker App is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute the codebase for personal or commercial purposes. Attribution is appreciated but not required.
-
-## Acknowledgements
-
-- This app was built with [Flutter](https://flutter.dev/), an open-source UI framework developed by Google.
-- We would like to thank the open-source community for their valuable contributions and the Flutter team for their continuous support.
-
-## Contact
-
-For any questions, issues, or suggestions regarding the Expenses Tracker App, please contact our support team at [support@example.com](mailto:support@example.com).
-
-## Screenshots
-
-<img src="https://github.com/ImGhostCode/Personal-Expense-Management-App/assets/97029516/d268bf4f-e6d0-4196-8c55-53b24091a539" width="250" height="500">
-
-<img src="https://github.com/ImGhostCode/Personal-Expense-Management-App/assets/97029516/3c36026c-3123-42c3-9098-a7ce9d57f67e" width="250" height="500"> 
-
-<img src="https://github.com/ImGhostCode/Personal-Expense-Management-App/assets/97029516/815f5d5e-f1ef-41a2-bd98-dcf4a8b13fc2" width="250" height="500">
-
-<img src="https://github.com/ImGhostCode/Personal-Expense-Management-App/assets/97029516/b56f0a6a-742f-485e-816b-d4f09ec4b0a7" width="250" height="500">
-
-<img src="https://github.com/ImGhostCode/Personal-Expense-Management-App/assets/97029516/81b5442a-e981-4ba5-aa6f-8853dad525dc" width="250" height="500">
-
-<img src="https://github.com/ImGhostCode/Personal-Expense-Management-App/assets/97029516/4b12edca-495d-404c-86a8-3d0b79e47cd7" width="250" height="500">
-
-<img src="https://github.com/ImGhostCode/Personal-Expense-Management-App/assets/97029516/4aafa9f2-18a3-48ad-8aeb-26511b3cdab8" width="250" height="500">
-
-<img src="https://github.com/ImGhostCode/Personal-Expense-Management-App/assets/97029516/6ffca4a6-b638-4e28-a759-df42f453e479" width="250" height="500">
-
-<img src="https://github.com/ImGhostCode/Personal-Expense-Management-App/assets/97029516/a978a651-76ee-4c57-a445-5aaece9beaf6" width="250" height="500">
+Personal Finance Manager App
+ Group Members
+ Elisha Theetla
+ Abhiram Gelle
+ GitHub Repository Link
+ https://github.com/etheetla1/Personal_financeProject
+ Project Summary
+ The Personal Finance Manager App is designed to help users track and manage their personal
+ finances efficiently. It will offer a user-friendly interface for logging income, expenses, savings,
+ and investments. The app aims to provide users with an overview of their financial health,
+ insights into their spending patterns, and tools to help them achieve their financial goals.
+ Key features of the app include:- Income & Expense Tracker: A module where users can record their daily income and
+ expenditures.- Savings Goal Manager: Users can set specific savings goals and track their progress visually.- Budget Creation: Allows users to create a monthly or weekly budget and track their adherence
+ to it.- Financial Summary Dashboard: A visual dashboard presenting income vs. expenses, savings
+ goals, and investments, using charts and graphs.- User Privacy & Security: All financial data will be securely stored locally or in the cloud, with
+ encryption options for sensitive information.
+ The app is designed for people looking to improve their financial management. It helps users
+ track spending, view recent transactions, and set achievable savings goals, all through a
+ user-friendly interface. With visual tools like graphs and progress bars, the app makes it easy to
+ monitor financial health and stay on top of personal budgeting.
+Wireframe and User Interface (UI) Layout
+ Number and Nameof Unique Screens
+ 1. Login/Sign-up Screen- Allows users to create an account or log in. Users may opt for biometric login (e.g.,
+ fingerprint/face ID).
+ 2. Dashboard Screen- Displays a summary of income, expenses, and savings goals.- Graphs and charts showing monthly or weekly financial performance.
+ 3. Income & Expense Tracker Screen- Users can manually enter their income and expenses here.- Categories for expenses (e.g., groceries, rent, utilities) with icons for easy identification.
+ 4. Budget Management Screen- Users can create and manage their budgets, with real-time tracking of budget limits & expenses.
+5. Savings Goal Screen- Users can set savings goals and track their progress. Visual indicators such as progress bars will
+ show how close they are to reaching their targets.
+ 6. Profile & Settings Screen- Includes user profile information, financial settings, data export, and app preferences (e.g., dark
+ mode).
+ Functionality & User Experience (UX)
+ Proposed Use Cases for Screen Transitions:
+ 1. Login/Sign-up to Dashboard- After logging in or signing up, the user is taken to the dashboard showing their financial
+ summary.
+ 2. Dashboard to Income & Expense Tracker- Users can navigate to the income & expense tracker by tapping the 'Add Transaction' button.
+ 3. Dashboard to Budget Management- Tapping on the 'Manage Budget' section directs the user to the budget management screen,
+ where they can adjust their monthly budget.
+ 4. Dashboard to Savings Goal- Tapping on the 'Savings Goals' section allows users to add or update their goals and track their
+ progress.
+ 5. Profile/Settings- Accessible from the menu, this screen lets users change personal and financial settings and
+ export data.
+ Iterative Design
+ Iterative Design involves continuously refining and improving the app through cycles of
+ user feedback, testing, and updates. For the financial management app:
+ 1. Initial Prototype: Build basic features (login, dashboard, expense tracker). Test
+ usability and gather feedback.
+ 2. Refinement:Basedonfeedback, simplify processes like budget setting and improve
+ navigation. Test again with a larger group.
+ 3. FeatureExpansion: Addadvancedfeatures (biometric login, reports). Ensure new
+ additions integrate seamlessly.
+ 4. Polish&Visuals: Enhance design aesthetics and test for improved user
+ engagement.
+5. OngoingUpdates:Continuously gather feedback, fix bugs, and release new features
+ to keep the app user-centric.
+ This process ensures a user-friendly, evolving app that adapts to user needs over time.
+ Test Cases and Approach to Refining Improvements
+ 1. Initial User Testing: We will conduct user testing with a focus group to gather feedback on
+ usability, particularly for navigating between screens and using key features like income/expense
+ tracking and budget management.
+ 2. User Feedback Loop: Based on feedback, we will iteratively improve UI layouts, simplify data
+ input, and enhance the user experience.
+ 3. Bug Fixes & Performance Improvements: We'll conduct multiple rounds of testing to identify
+ and resolve any performance issues, such as slow load times or crashes.
+ 4. Final Usability Testing: Before the final submission, we’ll ensure that the app is bug-free and
+ offers a smooth user experience across all functionalities.
+ Tools & Technologies- Framework: Flutter (for cross-platform development on iOS and Android)- Backend: Firebase (for user authentication and database)- Local Storage: SQLite (for offline use)- Version Control: GitHub (for source control and collaboration)- Testing: Flutter Test, Integration Tests, and manual user testing
+ Statement of Understanding
+ We, the undersigned members of the group, acknowledge that we understand the conditions set
+ forth in this proposal. We are committed to actively participating in the implementation of the
+ group project from start to finish. We understand that individual grades may vary based on our
+ contributions and performance, and we agree to present an important phase of the work
+ collectively.
+ Signatures
+ Name: Elisha Theetla
+ Name: Abhiram Gell
