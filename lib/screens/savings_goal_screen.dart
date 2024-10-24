@@ -15,18 +15,23 @@ class _SavingsGoalScreenState extends State<SavingsGoalScreen> {
   TextEditingController goalController = TextEditingController();
   TextEditingController amountController = TextEditingController();
 
+  // Add savings goal to the database
   void _addSavingsGoal() async {
     double goalAmount = double.tryParse(amountController.text) ?? 0;
     String goalName = goalController.text;
 
     if (goalAmount > 0 && goalName.isNotEmpty) {
-      await dbHelper.addSavingsGoal(widget.userId, goalName, goalAmount);
+      // Ensure the correct method from db_helper.dart is called
+      await dbHelper.addSavingsGoal(widget.userId, goalName, goalAmount, 0.0);
+
+      // Notify the user with a success message
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Savings goal added successfully')));
 
       // Return true to indicate data was added and the dashboard should reload
       Navigator.pop(context, true);
     } else {
+      // Notify the user if the input is invalid
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Please enter valid data')));
     }
@@ -56,7 +61,8 @@ class _SavingsGoalScreenState extends State<SavingsGoalScreen> {
             SizedBox(height: screenHeight * 0.02),
             _buildTextField("Goal Name", goalController, screenHeight),
             SizedBox(height: screenHeight * 0.02),
-            _buildTextField("Goal Amount", amountController, screenHeight),
+            _buildTextField("Goal Amount", amountController, screenHeight,
+                keyboardType: TextInputType.number), // Accept only numbers
             SizedBox(height: screenHeight * 0.05),
             Center(
               child: ElevatedButton(
@@ -80,11 +86,13 @@ class _SavingsGoalScreenState extends State<SavingsGoalScreen> {
     );
   }
 
+  // Text field builder
   Widget _buildTextField(
-      String hint, TextEditingController controller, double screenHeight) {
+      String hint, TextEditingController controller, double screenHeight,
+      {TextInputType keyboardType = TextInputType.text}) {
     return TextField(
       controller: controller,
-      keyboardType: TextInputType.text,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
         hintText: hint,
         border: OutlineInputBorder(

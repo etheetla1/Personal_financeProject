@@ -14,23 +14,47 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
   final DBHelper dbHelper = DBHelper();
   TextEditingController amountController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  String selectedCategory = 'Income';
 
-  void _addTransaction() async {
+  List<String> budgetCategories = ['Income']; // Default "Income" category
+  String selectedCategory = 'Income'; // Default selected category
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBudgetCategories();
+  }
+
+  // Fetch budget categories to populate the dropdown
+  Future<void> _loadBudgetCategories() async {
+    List<Map<String, dynamic>> budgets =
+        await dbHelper.getUserBudgets(widget.userId);
+    setState(() {
+      budgetCategories.addAll(
+          budgets.map((budget) => budget['category'].toString()).toList());
+    });
+  }
+
+  // Add transaction
+  Future<void> _addTransaction() async {
     double amount = double.tryParse(amountController.text) ?? 0;
     String description = descriptionController.text;
 
     if (amount > 0 && description.isNotEmpty) {
       await dbHelper.addTransaction(
           widget.userId, amount, description, selectedCategory);
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Transaction added successfully')));
 
-      // Return true to indicate data was added and the dashboard should reload
-      Navigator.pop(context, true);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Transaction added successfully'),
+      ));
+
+      // Clear fields after submission
+      amountController.clear();
+      descriptionController.clear();
+
+      Navigator.pop(context, true); // Return true to refresh dashboard
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Please enter valid data')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Please enter a valid amount and description')));
     }
   }
 
@@ -41,7 +65,7 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Income & Expense"),
+        title: Text("Add Income or Expense"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -49,23 +73,19 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Add Transaction",
+              "Enter Transaction Details",
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    fontSize: screenHeight * 0.03, // Dynamic font size
+                    fontSize: screenHeight * 0.03,
                   ),
             ),
             SizedBox(height: screenHeight * 0.02),
-            _buildTextField(context, "Amount", TextInputType.number,
-                amountController, screenHeight),
-            SizedBox(height: screenHeight * 0.015),
-            _buildTextField(context, "Description", TextInputType.text,
-                descriptionController, screenHeight),
-            SizedBox(height: screenHeight * 0.015),
+            _buildTextField("Amount", amountController, screenHeight),
+            SizedBox(height: screenHeight * 0.02),
+            _buildTextField("Description", descriptionController, screenHeight),
+            SizedBox(height: screenHeight * 0.02),
             _buildCategoryDropdown(screenHeight),
-            SizedBox(
-                height: screenHeight *
-                    0.05), // Add extra spacing to center the button better
+            SizedBox(height: screenHeight * 0.05),
             Center(
               child: ElevatedButton(
                 onPressed: _addTransaction,
@@ -73,12 +93,11 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(
                       vertical: screenHeight * 0.02,
-                      horizontal: screenWidth * 0.3), // Button size
+                      horizontal: screenWidth * 0.3),
                   textStyle: TextStyle(fontSize: screenHeight * 0.02),
                   backgroundColor: Colors.blueAccent,
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(8.0), // Rectangular button
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
               ),
@@ -89,40 +108,35 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
     );
   }
 
+  // Build a text field
   Widget _buildTextField(
-      BuildContext context,
-      String hintText,
-      TextInputType type,
-      TextEditingController controller,
-      double screenHeight) {
+      String hint, TextEditingController controller, double screenHeight) {
     return TextField(
       controller: controller,
-      keyboardType: type,
+      keyboardType: TextInputType.numberWithOptions(decimal: true),
       decoration: InputDecoration(
-        hintText: hintText,
+        hintText: hint,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
         contentPadding: EdgeInsets.symmetric(
-            horizontal: 16.0,
-            vertical: screenHeight * 0.015), // Dynamic padding
+            horizontal: 16.0, vertical: screenHeight * 0.015),
       ),
     );
   }
 
+  // Build category dropdown
   Widget _buildCategoryDropdown(double screenHeight) {
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        contentPadding: EdgeInsets.symmetric(
-            horizontal: 16.0,
-            vertical: screenHeight * 0.015), // Dynamic padding
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
       ),
       value: selectedCategory,
-      items: <String>['Income', 'Expense'].map((String value) {
+      items: budgetCategories.map((String category) {
         return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
+          value: category,
+          child: Text(category),
         );
       }).toList(),
       onChanged: (newValue) {
@@ -130,6 +144,7 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
           selectedCategory = newValue!;
         });
       },
+      hint: Text("Select Category"),
     );
   }
 }

@@ -80,14 +80,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 title: Text("Add Income or Expense"),
                 onTap: () async {
                   Navigator.pop(context);
-                  // Navigate to the add screen and pass userId
                   final result = await Navigator.pushNamed(
                       context, '/income_expense',
                       arguments: widget.userId);
-
-                  // Safely cast result to bool
                   if (result == true) {
-                    loadUserData(); // Reload the dashboard data
+                    loadUserData();
                   }
                 },
               ),
@@ -96,13 +93,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 title: Text("Add Budget"),
                 onTap: () async {
                   Navigator.pop(context);
-                  // Navigate to the add budget screen and pass userId
                   final result = await Navigator.pushNamed(context, '/budget',
                       arguments: widget.userId);
-
-                  // Safely cast result to bool
                   if (result == true) {
-                    loadUserData(); // Reload dashboard data
+                    loadUserData();
                   }
                 },
               ),
@@ -111,14 +105,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 title: Text("Add Savings Goal"),
                 onTap: () async {
                   Navigator.pop(context);
-                  // Navigate to the add savings goal screen and pass userId
                   final result = await Navigator.pushNamed(
                       context, '/savings_goal',
                       arguments: widget.userId);
-
-                  // Safely cast result to bool
                   if (result == true) {
-                    loadUserData(); // Reload dashboard data
+                    loadUserData();
                   }
                 },
               ),
@@ -194,7 +185,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // Build list of transactions with delete and edit functionality
   Widget _buildTransactionList(
       List<Map<String, dynamic>> transactions, double screenHeight) {
     return ListView.builder(
@@ -275,6 +265,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  // Savings Goal List with "Contribute" button
   Widget _buildSavingsGoalList(
       List<Map<String, dynamic>> savingsGoals, double screenHeight) {
     return ListView.builder(
@@ -294,6 +285,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
             title: Text(savings['goal_name']),
             subtitle: Text(
               'Goal: \$${savings['goal_amount']} Saved: \$${savings['saved_amount']}',
+            ),
+            trailing: ElevatedButton(
+              child: Text('Contribute'),
+              onPressed: () {
+                // Navigate to ContributeSavingsScreen
+                Navigator.pushNamed(context, '/contribute_savings', arguments: {
+                  'userId': widget.userId,
+                  'goalName': savings['goal_name'],
+                }).then((result) {
+                  if (result == true) {
+                    loadUserData(); // Refresh after contribution
+                  }
+                });
+              },
             ),
           ),
         );

@@ -1,3 +1,4 @@
+import 'package:expanse_management/screens/contribute_savings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/login_signup.dart';
@@ -85,6 +86,13 @@ class _FinanceManagerAppState extends State<FinanceManagerApp> {
                 builder: (context) => EditTransactionScreen(
                       transaction: transaction,
                     ));
+          case '/contribute_savings':
+            final args = settings.arguments as Map<String, dynamic>;
+            final int userId = args['userId'];
+            final String goalName = args['goalName'];
+            return MaterialPageRoute(
+                builder: (context) => ContributeSavingsScreen(
+                    userId: userId, goalName: goalName));
           default:
             return MaterialPageRoute(
                 builder: (context) => LoginSignupScreen(
