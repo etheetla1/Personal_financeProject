@@ -45,12 +45,73 @@ class _DashboardScreenState extends State<DashboardScreen> {
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
   }
 
+  void _openSettings() {
+    Navigator.pushNamed(context, '/profile_settings', arguments: widget.userId);
+  }
+
+  // Function to display the bottom sheet for selecting an action
+  void _showAddOptions() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          height: MediaQuery.of(context).size.height *
+              0.3, // Adjust based on screen size
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Select Action",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              ListTile(
+                leading: Icon(Icons.monetization_on),
+                title: Text("Add Income or Expense"),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/income_expense',
+                      arguments: widget.userId);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.pie_chart),
+                title: Text("Add Budget"),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/budget',
+                      arguments: widget.userId);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.savings),
+                title: Text("Add Savings Goal"),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/savings_goal',
+                      arguments: widget.userId);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Dashboard'),
         actions: [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: _openSettings, // Settings button
+          ),
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: _logout, // Logout button
@@ -67,39 +128,49 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildSectionTitle('Transactions'),
+                        _buildSectionTitle('Transactions', screenHeight),
                         transactions.isEmpty
-                            ? Center(child: Text('No transactions available.'))
-                            : _buildCardList(
-                                transactions, 'amount', 'description'),
+                            ? _buildEmptyState('No transactions available.',
+                                '/income_expense', screenHeight, screenWidth)
+                            : _buildCardList(transactions, 'amount',
+                                'description', screenHeight,
+                                isTransaction: true),
                         SizedBox(height: 20),
-                        _buildSectionTitle('Budgets'),
+                        _buildSectionTitle('Budgets', screenHeight),
                         budgets.isEmpty
-                            ? Center(child: Text('No budgets available.'))
-                            : _buildCardList(
-                                budgets, 'category', 'budget_limit',
+                            ? _buildEmptyState('No budgets available.',
+                                '/budget', screenHeight, screenWidth)
+                            : _buildCardList(budgets, 'budget_limit',
+                                'category', screenHeight,
                                 isBudget: true),
                         SizedBox(height: 20),
-                        _buildSectionTitle('Savings Goals'),
+                        _buildSectionTitle('Savings Goals', screenHeight),
                         savingsGoals.isEmpty
-                            ? Center(child: Text('No savings goals available.'))
-                            : _buildCardList(
-                                savingsGoals, 'goal_name', 'goal_amount',
+                            ? _buildEmptyState('No savings goals available.',
+                                '/savings_goal', screenHeight, screenWidth)
+                            : _buildCardList(savingsGoals, 'goal_amount',
+                                'goal_name', screenHeight,
                                 isSavings: true),
                       ],
                     ),
                   ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed:
+            _showAddOptions, // Show options to add Income/Expense, Budget, or Savings Goal
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blueAccent,
+      ),
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, double screenHeight) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(
         title,
         style: TextStyle(
-          fontSize: 22,
+          fontSize: screenHeight * 0.03, // Dynamic font size
           fontWeight: FontWeight.bold,
           color: Colors.blueAccent,
         ),
@@ -107,9 +178,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildCardList(
-      List<Map<String, dynamic>> items, String titleKey, String subtitleKey,
-      {bool isBudget = false, bool isSavings = false}) {
+  // Only show the dollar symbol for amounts
+  Widget _buildCardList(List<Map<String, dynamic>> items, String amountKey,
+      String titleKey, double screenHeight,
+      {bool isBudget = false,
+      bool isSavings = false,
+      bool isTransaction = false}) {
     return ListView.builder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
@@ -117,31 +191,69 @@ class _DashboardScreenState extends State<DashboardScreen> {
       itemBuilder: (context, index) {
         final item = items[index];
         return Card(
-          margin: const EdgeInsets.symmetric(vertical: 8.0),
+          margin: EdgeInsets.symmetric(
+              vertical: screenHeight * 0.01), // Dynamic margin
           elevation: 4,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
           child: ListTile(
-            contentPadding: const EdgeInsets.all(16.0),
+            contentPadding:
+                EdgeInsets.all(screenHeight * 0.02), // Dynamic padding
             title: Text(
-              isBudget
-                  ? '${item[titleKey]}: \$${item[subtitleKey]}'
-                  : '${item[titleKey]}',
+              '${item[titleKey]}', // Do not add $ for descriptions or categories
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
+                fontSize: screenHeight * 0.022, // Dynamic font size
               ),
             ),
             subtitle: Text(
-              isSavings
-                  ? 'Goal: \$${item[subtitleKey]}'
-                  : 'Spent: \$${item[subtitleKey]}',
-              style: TextStyle(fontSize: 14),
+              // Show dollar symbol only for amounts
+              isBudget || isSavings || isTransaction
+                  ? 'Amount: \$${item[amountKey]}' // Dollar only for amounts
+                  : '${item[amountKey]}',
+              style:
+                  TextStyle(fontSize: screenHeight * 0.02), // Dynamic font size
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildEmptyState(String message, String routeName, double screenHeight,
+      double screenWidth) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(height: screenHeight * 0.05), // Dynamic spacing
+        Center(
+          child: Text(
+            message,
+            style: TextStyle(
+              fontSize: screenHeight * 0.02,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+        SizedBox(height: screenHeight * 0.02), // Dynamic spacing
+        ElevatedButton(
+          onPressed: () {
+            Navigator.pushNamed(context, routeName, arguments: widget.userId);
+          },
+          child: Text('Add Now'),
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(
+                vertical: screenHeight * 0.02,
+                horizontal: screenWidth * 0.1), // Dynamic button size
+            textStyle: TextStyle(fontSize: screenHeight * 0.02),
+            backgroundColor: Colors.blueAccent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0), // Rectangular shape
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

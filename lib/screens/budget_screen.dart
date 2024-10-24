@@ -31,26 +31,33 @@ class _BudgetScreenState extends State<BudgetScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(title: Text("Manage Budget")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
-              controller: budgetAmountController,
-              decoration: InputDecoration(labelText: "Budget Amount"),
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(height: 10),
-            _buildCategoryDropdown(),
-            SizedBox(height: 20),
+            _buildTextField(context, "Budget Amount", TextInputType.number,
+                budgetAmountController, screenHeight),
+            SizedBox(height: screenHeight * 0.015),
+            _buildCategoryDropdown(screenHeight),
+            SizedBox(height: screenHeight * 0.02),
             ElevatedButton(
               onPressed: _addBudget,
               child: Text("Set Budget"),
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-                textStyle: TextStyle(fontSize: 18),
+                padding: EdgeInsets.symmetric(
+                    vertical: screenHeight * 0.02,
+                    horizontal: screenWidth * 0.1), // Dynamic button size
+                textStyle: TextStyle(fontSize: screenHeight * 0.02),
+                backgroundColor: Colors.blueAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.circular(8.0), // Rectangular button
+                ),
               ),
             ),
           ],
@@ -59,11 +66,34 @@ class _BudgetScreenState extends State<BudgetScreen> {
     );
   }
 
-  Widget _buildCategoryDropdown() {
+  Widget _buildTextField(
+      BuildContext context,
+      String hintText,
+      TextInputType type,
+      TextEditingController controller,
+      double screenHeight) {
+    return TextField(
+      controller: controller,
+      keyboardType: type,
+      decoration: InputDecoration(
+        hintText: hintText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        contentPadding: EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: screenHeight * 0.015), // Dynamic padding
+      ),
+    );
+  }
+
+  Widget _buildCategoryDropdown(double screenHeight) {
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+        contentPadding: EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: screenHeight * 0.015), // Dynamic padding
       ),
       value: selectedCategory,
       items: <String>['Groceries', 'Rent', 'Utilities', 'Others']

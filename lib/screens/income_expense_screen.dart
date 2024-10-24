@@ -35,6 +35,9 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Add Income & Expense"),
@@ -48,23 +51,35 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
               "Add Transaction",
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
+                    fontSize: screenHeight * 0.03, // Dynamic font size
                   ),
             ),
-            SizedBox(height: 20),
-            _buildTextField(
-                context, "Amount", TextInputType.number, amountController),
-            SizedBox(height: 10),
+            SizedBox(height: screenHeight * 0.02),
+            _buildTextField(context, "Amount", TextInputType.number,
+                amountController, screenHeight),
+            SizedBox(height: screenHeight * 0.015),
             _buildTextField(context, "Description", TextInputType.text,
-                descriptionController),
-            SizedBox(height: 10),
-            _buildCategoryDropdown(),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _addTransaction,
-              child: Text("Add Transaction"),
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-                textStyle: TextStyle(fontSize: 18),
+                descriptionController, screenHeight),
+            SizedBox(height: screenHeight * 0.015),
+            _buildCategoryDropdown(screenHeight),
+            SizedBox(
+                height: screenHeight *
+                    0.05), // Add extra spacing to center the button better
+            Center(
+              child: ElevatedButton(
+                onPressed: _addTransaction,
+                child: Text("Add Transaction"),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(
+                      vertical: screenHeight * 0.02,
+                      horizontal: screenWidth * 0.3), // Button size
+                  textStyle: TextStyle(fontSize: screenHeight * 0.02),
+                  backgroundColor: Colors.blueAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(8.0), // Rectangular button
+                  ),
+                ),
               ),
             ),
           ],
@@ -73,8 +88,12 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
     );
   }
 
-  Widget _buildTextField(BuildContext context, String hintText,
-      TextInputType type, TextEditingController controller) {
+  Widget _buildTextField(
+      BuildContext context,
+      String hintText,
+      TextInputType type,
+      TextEditingController controller,
+      double screenHeight) {
     return TextField(
       controller: controller,
       keyboardType: type,
@@ -83,16 +102,20 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+        contentPadding: EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: screenHeight * 0.015), // Dynamic padding
       ),
     );
   }
 
-  Widget _buildCategoryDropdown() {
+  Widget _buildCategoryDropdown(double screenHeight) {
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+        contentPadding: EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: screenHeight * 0.015), // Dynamic padding
       ),
       value: selectedCategory,
       items: <String>['Income', 'Expense'].map((String value) {
