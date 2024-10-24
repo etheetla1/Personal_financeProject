@@ -148,4 +148,27 @@ class DBHelper {
     return await dbClient
         .query('savings_goals', where: 'user_id = ?', whereArgs: [userId]);
   }
+
+  // Delete a transaction
+  Future<void> deleteTransaction(int transactionId) async {
+    final database = await db;
+    await database
+        .delete('transactions', where: 'id = ?', whereArgs: [transactionId]);
+  }
+
+  // Update a transaction
+  Future<void> updateTransaction(int transactionId, double amount,
+      String description, String category) async {
+    final database = await db;
+    await database.update(
+      'transactions',
+      {
+        'amount': amount,
+        'description': description,
+        'category': category,
+      },
+      where: 'id = ?',
+      whereArgs: [transactionId],
+    );
+  }
 }

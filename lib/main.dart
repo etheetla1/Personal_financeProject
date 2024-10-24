@@ -6,6 +6,7 @@ import 'screens/income_expense_screen.dart';
 import 'screens/budget_screen.dart';
 import 'screens/savings_goal_screen.dart';
 import 'screens/profile_settings.dart';
+import 'screens/edit_transaction_screen.dart';
 
 void main() {
   runApp(FinanceManagerApp());
@@ -76,6 +77,13 @@ class _FinanceManagerAppState extends State<FinanceManagerApp> {
                       toggleTheme: _toggleTheme,
                       isDarkMode: isDarkMode,
                       userId: userId,
+                    ));
+          case '/edit_transaction':
+            final Map<String, dynamic> transaction =
+                settings.arguments as Map<String, dynamic>;
+            return MaterialPageRoute(
+                builder: (context) => EditTransactionScreen(
+                      transaction: transaction,
                     ));
           default:
             return MaterialPageRoute(
