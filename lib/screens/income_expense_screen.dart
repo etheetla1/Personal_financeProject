@@ -15,8 +15,11 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
   TextEditingController amountController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
-  List<String> budgetCategories = ['Income']; // Default "Income" category
-  String selectedCategory = 'Income'; // Default selected category
+  List<String> categories = [
+    'Income',
+    'Expense'
+  ]; // Default categories (Income and generic Expense)
+  String selectedCategory = 'Expense'; // Default selected category
 
   @override
   void initState() {
@@ -29,7 +32,7 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
     List<Map<String, dynamic>> budgets =
         await dbHelper.getUserBudgets(widget.userId);
     setState(() {
-      budgetCategories.addAll(
+      categories.addAll(
           budgets.map((budget) => budget['category'].toString()).toList());
     });
   }
@@ -84,6 +87,8 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
             SizedBox(height: screenHeight * 0.02),
             _buildTextField("Description", descriptionController, screenHeight),
             SizedBox(height: screenHeight * 0.02),
+
+            // Dropdown for selecting category (Income, Expense, or budget categories)
             _buildCategoryDropdown(screenHeight),
             SizedBox(height: screenHeight * 0.05),
             Center(
@@ -133,7 +138,7 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
         contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
       ),
       value: selectedCategory,
-      items: budgetCategories.map((String category) {
+      items: categories.map((String category) {
         return DropdownMenuItem<String>(
           value: category,
           child: Text(category),
