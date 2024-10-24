@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import '../db_helper.dart';
 
 class EditTransactionScreen extends StatefulWidget {
-  final Map<String, dynamic> transaction; // Pass the transaction data
+  final Map<String, dynamic>
+      transaction; // Passing the whole transaction object
+  final int userId;
 
-  EditTransactionScreen({required this.transaction});
+  EditTransactionScreen({required this.transaction, required this.userId});
 
   @override
   _EditTransactionScreenState createState() => _EditTransactionScreenState();
@@ -12,47 +14,67 @@ class EditTransactionScreen extends StatefulWidget {
 
 class _EditTransactionScreenState extends State<EditTransactionScreen> {
   final DBHelper dbHelper = DBHelper();
-  late TextEditingController amountController;
-  late TextEditingController descriptionController;
-  String selectedCategory = 'Income'; // Default
+  TextEditingController amountController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+
+  List<String> categories = ['Income', 'Expense'];
+  String selectedCategory = 'Expense'; // Default category
 
   @override
   void initState() {
     super.initState();
-    amountController =
-        TextEditingController(text: widget.transaction['amount'].toString());
-    descriptionController =
-        TextEditingController(text: widget.transaction['description']);
-    selectedCategory = widget.transaction['category'];
+    _loadBudgetCategories();
+    _loadTransactionData(); // Load the data to edit
   }
 
-  // Function to update the transaction in the database
-  void _updateTransaction() async {
-    double amount = double.tryParse(amountController.text) ?? 0;
-    String description = descriptionController.text;
+  // Load the transaction data into the controllers
+  void _loadTransactionData() {
+    setState(() {
+      amountController.text = widget.transaction['amount'].toString();
+      descriptionController.text = widget.transaction['description'];
+      selectedCategory = widget.transaction['category'];
+    });
+  }
 
-    if (amount > 0 && description.isNotEmpty) {
+  // Fetch budget categories to populate the dropdown
+  Future<void> _loadBudgetCategories() async {
+    List<Map<String, dynamic>> budgets =
+        await dbHelper.getUserBudgets(widget.userId);
+    setState(() {
+      categories.addAll(
+          budgets.map((budget) => budget['category'].toString()).toList());
+    });
+  }
+
+  // Update the transaction
+  Future<void> _updateTransaction() async {
+    double newAmount = double.tryParse(amountController.text) ?? 0;
+    String newDescription = descriptionController.text;
+    String newCategory = selectedCategory;
+
+    if (newAmount > 0 && newDescription.isNotEmpty) {
       await dbHelper.updateTransaction(
         widget.transaction['id'], // Transaction ID
-        amount,
-        description,
-        selectedCategory,
+        newAmount,
+        newCategory,
+        newDescription,
       );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Transaction updated successfully')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Transaction updated successfully'),
+      ));
 
-      // Return true to indicate data was updated
-      Navigator.pop(context, true);
+      Navigator.pop(context, true); // Return true to refresh dashboard
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Please enter valid data')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Please enter a valid amount and description')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: AppBar(
@@ -64,18 +86,19 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Edit Transaction",
+              "Edit Transaction Details",
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    fontSize: screenHeight * 0.03, // Dynamic font size
+                    fontSize: screenHeight * 0.03,
                   ),
             ),
             SizedBox(height: screenHeight * 0.02),
-            _buildTextField("Amount", TextInputType.number, amountController),
+            _buildTextField("Amount", amountController, screenHeight),
             SizedBox(height: screenHeight * 0.02),
-            _buildTextField(
-                "Description", TextInputType.text, descriptionController),
+            _buildTextField("Description", descriptionController, screenHeight),
             SizedBox(height: screenHeight * 0.02),
+
+            // Dropdown for selecting category (Income, Expense, or budget categories)
             _buildCategoryDropdown(screenHeight),
             SizedBox(height: screenHeight * 0.05),
             Center(
@@ -85,11 +108,11 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(
                       vertical: screenHeight * 0.02,
-                      horizontal: screenHeight * 0.1),
+                      horizontal: screenWidth * 0.3),
                   textStyle: TextStyle(fontSize: screenHeight * 0.02),
                   backgroundColor: Colors.blueAccent,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0), // Button styling
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
               ),
@@ -100,32 +123,35 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
     );
   }
 
+  // Build a text field
   Widget _buildTextField(
-      String hint, TextInputType type, TextEditingController controller) {
+      String hint, TextEditingController controller, double screenHeight) {
     return TextField(
       controller: controller,
-      keyboardType: type,
+      keyboardType: TextInputType.numberWithOptions(decimal: true),
       decoration: InputDecoration(
         hintText: hint,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+        contentPadding: EdgeInsets.symmetric(
+            horizontal: 16.0, vertical: screenHeight * 0.015),
       ),
     );
   }
 
+  // Build category dropdown
   Widget _buildCategoryDropdown(double screenHeight) {
     return DropdownButtonFormField<String>(
-      value: selectedCategory,
       decoration: InputDecoration(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
       ),
-      items: <String>['Income', 'Expense'].map((String value) {
+      value: selectedCategory,
+      items: categories.map((String category) {
         return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
+          value: category,
+          child: Text(category),
         );
       }).toList(),
       onChanged: (newValue) {
@@ -133,6 +159,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
           selectedCategory = newValue!;
         });
       },
+      hint: Text("Select Category"),
     );
   }
 }

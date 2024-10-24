@@ -80,11 +80,15 @@ class _FinanceManagerAppState extends State<FinanceManagerApp> {
                       userId: userId,
                     ));
           case '/edit_transaction':
-            final Map<String, dynamic> transaction =
+            final Map<String, dynamic> arguments =
                 settings.arguments as Map<String, dynamic>;
+            final Map<String, dynamic> transaction = arguments['transaction'];
+            final int userId = arguments['userId'];
+
             return MaterialPageRoute(
                 builder: (context) => EditTransactionScreen(
                       transaction: transaction,
+                      userId: userId,
                     ));
           case '/contribute_savings':
             final args = settings.arguments as Map<String, dynamic>;

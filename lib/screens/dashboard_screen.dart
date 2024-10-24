@@ -221,7 +221,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 IconButton(
                   icon: Icon(Icons.edit, color: Colors.blue),
-                  onPressed: () => _editTransaction(transaction),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/edit_transaction',
+                      arguments: {
+                        'transaction':
+                            transaction, // Passing the transaction object
+                        'userId': widget.userId, // Passing the user ID
+                      },
+                    ).then((value) {
+                      if (value == true) {
+                        loadUserData(); // Refresh the data after editing
+                      }
+                    });
+                  },
                 ),
                 IconButton(
                   icon: Icon(Icons.delete, color: Colors.red),
